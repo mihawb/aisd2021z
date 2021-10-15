@@ -51,23 +51,25 @@ public class InsertionSortTest {
     }
 
     @Test
-    public void optimisticcScenario() {
+    public void optimisticScenario() {
         arr = new double[]{0, 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7};
         sortobj.sort(arr);
         assertTrue("Optimistic scenario was not sorted properly!", Utils.assertSorted(arr));
     }
 
     @Test
+    public void generalScenario() {
+        arr = new double[]{4.4, 0, 2.2, 1.1, 6.6, 3.3, 7.7, 5.5};
+        sortobj.sort(arr);
+        assertTrue("General scenario was not sorted properly!", Utils.assertSorted(arr));
+    }
+
+    @Test
     public void randomScenario() {
         int len = 250000;
         long seed = 1337;
-        arr = new double[len];
 
-        // Arrays.setAll(arr, i -> Math.random());
-        // TO DO check on a different machine with java 1.8
-        // if lambdas would work here
-        Random randobj = new Random();
-        randobj.setSeed(seed);
+        arr = new double[len];
         arr = new Random(seed).doubles(len).toArray();
 
         sortobj.sort(arr);
