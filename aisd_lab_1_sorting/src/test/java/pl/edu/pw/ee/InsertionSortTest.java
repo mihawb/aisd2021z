@@ -26,7 +26,7 @@ public class InsertionSortTest {
         arr = null;
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void nullPointer() {
         sortobj.sort(arr);
     }
@@ -67,7 +67,7 @@ public class InsertionSortTest {
 
     @Test
     public void randomScenario() {
-        int len = 25;
+        int len = 100000;
         long seed = 1337;
 
         arr = new double[len];

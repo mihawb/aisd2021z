@@ -7,8 +7,7 @@ public class SelectionSort implements Sorting {
     @Override
     public void sort(double[] nums) {
         if (nums == null) {
-            // System.out.println("Verbose debug: Null pointer received and fended off.");
-            throw new NullPointerException();
+            throw new IllegalArgumentException("Nums array cannot be null");
         }
 
         int n = nums.length;
