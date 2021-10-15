@@ -25,7 +25,7 @@ public class SelectionSortTest {
         arr = null;
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void nullPointer() {
         sortobj.sort(arr);
     }
@@ -73,7 +73,7 @@ public class SelectionSortTest {
 
     @Test
     public void randomScenario() {
-        int len = 250000;
+        int len = 25;
         long seed = 1337;
 
         arr = new double[len];

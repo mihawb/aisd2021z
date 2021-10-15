@@ -8,10 +8,7 @@ public class SelectionSort implements Sorting {
     public void sort(double[] nums) {
         if (nums == null) {
             // System.out.println("Verbose debug: Null pointer received and fended off.");
-            return;
-        } else if (nums.length <= 1) {
-            // System.out.println("Verbose debug: Array of length " + nums.length + " does not require sorting.");
-            return; 
+            throw new NullPointerException();
         }
 
         int n = nums.length;

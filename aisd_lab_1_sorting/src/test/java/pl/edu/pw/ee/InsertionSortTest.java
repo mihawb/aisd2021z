@@ -6,6 +6,7 @@ import java.util.Random;
 // import java.util.Arrays;
 // import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+// import static org.junit.Assert.assertThrows; // works since junit 4.13+
 import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class InsertionSortTest {
         arr = null;
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void nullPointer() {
         sortobj.sort(arr);
     }
@@ -66,7 +67,7 @@ public class InsertionSortTest {
 
     @Test
     public void randomScenario() {
-        int len = 250000;
+        int len = 25;
         long seed = 1337;
 
         arr = new double[len];
