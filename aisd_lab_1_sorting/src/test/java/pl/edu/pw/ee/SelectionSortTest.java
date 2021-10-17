@@ -73,7 +73,7 @@ public class SelectionSortTest {
 
     @Test
     public void randomScenario() {
-        int len = 100000;
+        int len = 100000; // approximately 6 sec on my machine
         long seed = 1337;
 
         arr = new double[len];
