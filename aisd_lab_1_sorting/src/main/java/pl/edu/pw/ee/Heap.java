@@ -2,7 +2,6 @@ package pl.edu.pw.ee;
 
 import pl.edu.pw.ee.services.HeapInterface;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Heap<T extends Comparable<T>> implements HeapInterface<T> {
     private ArrayList<T> heap;
@@ -42,7 +41,7 @@ public class Heap<T extends Comparable<T>> implements HeapInterface<T> {
 
         swap(0, (len--) - 1);        
         heapDown();
-        printheap(); // DEBUG
+        // printheap();
         return heap.get(len);
     }
 
