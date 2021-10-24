@@ -76,7 +76,6 @@ public class SelectionSortTest {
         int len = 100000; // approximately 6 sec on my machine
         long seed = 1337;
 
-        arr = new double[len];
         arr = new Random(seed).doubles(len).toArray();
 
         sortobj.sort(arr);

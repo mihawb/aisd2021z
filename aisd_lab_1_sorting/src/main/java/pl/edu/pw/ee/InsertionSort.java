@@ -13,7 +13,7 @@ public class InsertionSort implements Sorting {
         int n = nums.length;
 
         for (int i = 1; i < n; i++) {
-            // System.out.println("Verbose debug: sorted " + (double)i*100/n + "% of the array.");
+            // System.out.println("Verbose debug: sorted " + (double)i*100/n + "% of the array of length " + n);
             double key = nums[i];
             int j = i - 1;
 

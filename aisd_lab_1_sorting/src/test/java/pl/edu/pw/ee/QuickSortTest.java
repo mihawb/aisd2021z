@@ -75,7 +75,6 @@ public class QuickSortTest {
         int len = 10000000; // approximately 3 sec on my machine
         long seed = 1337;
 
-        arr = new double[len];
         arr = new Random(seed).doubles(len).toArray();
 
         sortobj.sort(arr);
