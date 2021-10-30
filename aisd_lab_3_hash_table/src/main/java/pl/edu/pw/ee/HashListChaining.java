@@ -58,6 +58,30 @@ public class HashListChaining<T extends Comparable<T>> implements HashTable<T> {
         return elem != nil ? elem.value : nil;
     }
 
+    @Override
+    public void delete(T value) {
+        int hashCode = value.hashCode();
+        int hashId = countHashId(hashCode);
+
+        Elem elem = hashElems.get(hashId);
+        
+        // checking first element of linked list
+        if (elem != nil && elem.value.equals(value)) {
+            hashElems.set(hashId, elem.next);
+        }
+
+        //iterating thru the rest of linked list
+        while (elem != nil && elem.next != nil && !elem.next.value.equals(value)) {
+            elem = elem.next;
+        }
+
+        // if the while loop stopped and elem.next == nil,
+        // it means the node to delete hasnt been found
+        // and the hash table doesnt need to be altered
+        if (elem.next != nil)
+            elem.next = elem.next.next;
+    }
+
     public double countLoadFactor() {
         double size = hashElems.size();
         return nElem / size;

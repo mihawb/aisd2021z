@@ -6,4 +6,5 @@ public interface HashTable<T extends Comparable<T>> {
 
     Object get(T value);
 
+    void delete(T value);
 }

@@ -25,5 +25,7 @@ public class HashListChainingTest {
         hashtab.add("EWA");
 
         System.out.println(hashtab.get("OLA"));
+        hashtab.delete("OLA");
+        System.out.println(hashtab.get("OLA"));
     }
 }
