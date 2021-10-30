@@ -27,6 +27,9 @@ public class HashListChaining<T extends Comparable<T>> implements HashTable<T> {
 
     @Override
     public void add(T value) {
+        if (value == null)
+            throw new IllegalArgumentException("Value cannot be null!");
+            
         int hashCode = value.hashCode();
         int hashId = countHashId(hashCode);
 
@@ -45,7 +48,10 @@ public class HashListChaining<T extends Comparable<T>> implements HashTable<T> {
     }
 
     @Override
-    public Object get(T value) {
+    public T get(T value) {
+        if (value == null)
+            throw new IllegalArgumentException("Value cannot be null!");
+
         int hashCode = value.hashCode();
         int hashId = countHashId(hashCode);
 
@@ -55,11 +61,14 @@ public class HashListChaining<T extends Comparable<T>> implements HashTable<T> {
             elem = elem.next;
         }
 
-        return elem != nil ? elem.value : nil;
+        return elem != nil ? elem.value : null;
     }
 
     @Override
     public void delete(T value) {
+        if (value == null)
+            throw new IllegalArgumentException("Value cannot be null!");
+
         int hashCode = value.hashCode();
         int hashId = countHashId(hashCode);
 
