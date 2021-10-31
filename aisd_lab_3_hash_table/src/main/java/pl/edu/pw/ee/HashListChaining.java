@@ -77,6 +77,7 @@ public class HashListChaining<T extends Comparable<T>> implements HashTable<T> {
         // checking first element of linked list
         if (elem != nil && elem.value.equals(value)) {
             hashElems.set(hashId, elem.next);
+            return;
         }
 
         //iterating thru the rest of linked list
@@ -84,10 +85,10 @@ public class HashListChaining<T extends Comparable<T>> implements HashTable<T> {
             elem = elem.next;
         }
 
-        // if the while loop stopped and elem.next == nil,
-        // it means the node to delete hasnt been found
+        // if the while loop stopped with elem.next == nil,
+        // the node to delete hasnt been found
         // and the hash table doesnt need to be altered
-        if (elem.next != nil)
+        if (elem != nil && elem.next != nil)
             elem.next = elem.next.next;
     }
 
