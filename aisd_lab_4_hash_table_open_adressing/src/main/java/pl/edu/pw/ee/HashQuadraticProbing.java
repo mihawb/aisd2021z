@@ -1,5 +1,5 @@
-package pl.edu.pw.ee;
+// package pl.edu.pw.ee;
 
-public class HashQuadraticProbing<T extends Comparable<T>> extends HashOpenAdressing<T> {
-// TODO
-}
+// public class HashQuadraticProbing<T extends Comparable<T>> extends HashOpenAdressing<T> {
+// // TODO
+// }

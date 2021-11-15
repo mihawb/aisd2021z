@@ -1,5 +1,7 @@
 package pl.edu.pw.ee;
 
+import javax.lang.model.util.ElementScanner14;
+
 import pl.edu.pw.ee.exceptions.NotImplementedException;
 import pl.edu.pw.ee.services.HashTable;
 
@@ -9,6 +11,7 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
     private int size;
     private int nElems;
     private T[] hashElems;
+    private boolean[] tombstones;
     private final double correctLoadFactor;
 
     HashOpenAdressing() {
@@ -20,6 +23,7 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
 
         this.size = size;
         this.hashElems = (T[]) new Comparable[this.size];
+        this.tombstones = new boolean[this.size]; //defaults to false
         this.correctLoadFactor = 0.75;
     }
 
@@ -43,14 +47,44 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
 
     @Override
     public T get(T elem) {
-        // TODO Auto-generated method stub
+        validateInputElem(elem);
+        
+        int key = elem.hashCode();
+        int i = 0;
+        int hashId = hashFunc(key, i);
+
+        while (hashElems[hashId] != nil || (hashElems[hashId] == nil && tombstones[hashId])) {
+            
+            if (hashElems[hashId] != nil && hashElems[hashId].equals(elem))
+                return hashElems[hashId];
+
+            i = (i + 1) % size;
+            hashId = hashFunc(key, i);
+        }        
+
         return null;
     }
 
     @Override
     public void delete(T elem) {
-        // TODO Auto-generated method stub
+        validateInputElem(elem);
+        
+        int key = elem.hashCode();
+        int i = 0;
+        int hashId = hashFunc(key, i);
 
+        while (hashElems[hashId] != nil || (hashElems[hashId] == nil && tombstones[hashId])) {
+
+            if (hashElems[hashId].equals(elem)) {
+                hashElems[hashId] = nil;
+                tombstones[hashId] = true;
+                nElems--;
+                break;
+            }
+
+            i = (i + 1) % size;
+            hashId = hashFunc(key, i);
+        }
     }
 
     private void validateHashInitSize(int initialSize) {
@@ -84,7 +118,27 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
     }
 
     private void doubleResize() {
+        T[] oldHashElems = this.hashElems;
+        this.hashElems = (T[]) new Comparable[this.size * 2];
+        this.tombstones = new boolean[this.size * 2];
+
+        for (int i = 0; i < this.size; i++) {
+            if (oldHashElems[i] != nil)
+                this.put(oldHashElems[i]);
+        }
+
         this.size *= 2;
-        throw new NotImplementedException("This method is not yet implemented!");
+    }
+
+    public void printhashtab() {
+        int lim = this.size > 25 ? 25 : this.size;
+        for (int i = 0; i < lim; i++) {
+            if (hashElems[i] == null && !tombstones[i])
+                System.out.println(i + " | nil");
+            else if (hashElems[i] == null && tombstones[i])
+                System.out.println(i + " | tombstone");
+            else
+                System.out.println(i + " | " + hashElems[i] + " | " + hashElems[i].hashCode());
+        }
     }
 }
