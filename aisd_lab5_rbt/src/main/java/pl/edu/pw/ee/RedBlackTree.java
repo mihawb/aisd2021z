@@ -57,7 +57,7 @@ public class RedBlackTree<K extends Comparable<K>, V> {
 
     private Node<K, V> put(Node<K, V> node, K key, V value) {
         if (node == null) {
-            return new Node(key, value);
+            return new Node<K, V>(key, value);
         }
 
         if (isKeyBiggerThanNode(key, node)) {
