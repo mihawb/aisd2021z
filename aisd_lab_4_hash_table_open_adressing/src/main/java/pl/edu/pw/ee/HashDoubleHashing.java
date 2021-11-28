@@ -23,10 +23,10 @@ public class HashDoubleHashing<T extends Comparable<T>> extends HashOpenAdressin
     private int hashGunc(int key) {
         int m = getSize();
 
-        int hash = key % (m - 3);
+        int hash = 1 + key % (m - 3);
 
         if (hash == 0)
-            return 1; ////////////????????????????????????
+            return 1;
 
         hash = hash < 0 ? -hash : hash;
 

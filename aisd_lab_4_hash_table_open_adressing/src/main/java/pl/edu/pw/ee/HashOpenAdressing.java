@@ -19,7 +19,7 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
     HashOpenAdressing(int size) {
         validateHashInitSize(size);
 
-        this.size = size;
+        this.size = nextPrime(size);
         this.hashElems = (T[]) new Comparable[this.size]; // safe cast since T extends Comparable<T>
         this.tombstones = new boolean[this.size]; //defaults to false
         this.correctLoadFactor = 0.75;
@@ -31,7 +31,6 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
         resizeIfNeeded();
 
         int key = newElem.hashCode();
-        key = key < 0 ? -key : key;
         int i = 0;
         int hashId = hashFunc(key, i);
 
