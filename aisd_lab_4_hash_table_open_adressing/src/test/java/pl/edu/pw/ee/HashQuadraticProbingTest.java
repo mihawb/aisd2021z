@@ -10,12 +10,14 @@ import java.lang.reflect.Method;
 import pl.edu.pw.ee.services.HashTable;
 import pl.edu.pw.ee.services.EasyHashClass;
 
-public class HashLinearProbingTest {
+public class HashQuadraticProbingTest {
     @Test(expected = IllegalArgumentException.class)
     public void should_ThrowException_WhenInitialSizeIsLowerThanOne() {
         int initialSize = 0;
+        double initialA = -7.1;
+        double initialB = 4.6;
 
-        HashTable<Double> hash = new HashLinearProbing<>(initialSize);
+        HashTable<Double> hash = new HashQuadraticProbing<>(initialSize, initialA, initialB);
 
         assertTrue(false);
     }
@@ -24,7 +26,7 @@ public class HashLinearProbingTest {
     public void should_ThrowException_WhenNullPointerPassedToMethod() {
         // put, get, delete use the same validation method
 
-        HashTable<Double> hash = new HashLinearProbing<>();
+        HashTable<Double> hash = new HashQuadraticProbing<>();
         hash.put(null);
 
         assertTrue(false);
@@ -32,7 +34,7 @@ public class HashLinearProbingTest {
 
     @Test
     public void should_CorrectlyAddNewElems_WhenNotExistInHashTable() {
-        HashTable<String> emptyHash = new HashLinearProbing<>();
+        HashTable<String> emptyHash = new HashQuadraticProbing<>();
         String newEleme = "nothing special";
 
         int nOfElemsBeforePut = getNumOfElems(emptyHash);
@@ -45,7 +47,7 @@ public class HashLinearProbingTest {
 
     @Test
     public void should_CorrectlyAddNewElems_DifferentHashes() {
-        HashTable<EasyHashClass> nonEmptyHash = new HashLinearProbing<>();
+        HashTable<EasyHashClass> nonEmptyHash = new HashQuadraticProbing<>();
         EasyHashClass [] newElems = new EasyHashClass[4];
 
         for (int i = 0; i < 4; i++)
@@ -62,7 +64,7 @@ public class HashLinearProbingTest {
 
     @Test
     public void should_CorrectlyGetNewElems_DifferentHashes() {
-        HashTable<EasyHashClass> nonEmptyHash = new HashLinearProbing<>();
+        HashTable<EasyHashClass> nonEmptyHash = new HashQuadraticProbing<>();
         EasyHashClass [] newElems = new EasyHashClass[4];
 
         for (int i = 0; i < 4; i++)
@@ -83,7 +85,7 @@ public class HashLinearProbingTest {
 
     @Test
     public void should_CorrectlyAddNewElems_SameHashes() {
-        HashTable<EasyHashClass> nonEmptyHash = new HashLinearProbing<>();
+        HashTable<EasyHashClass> nonEmptyHash = new HashQuadraticProbing<>();
         EasyHashClass [] newElems = new EasyHashClass[6];
 
         for (int i = 0; i < 4; i++)
@@ -102,7 +104,7 @@ public class HashLinearProbingTest {
 
     @Test
     public void should_CorrectlyGetNewElems_SameHashes() {
-        HashTable<EasyHashClass> nonEmptyHash = new HashLinearProbing<>();
+        HashTable<EasyHashClass> nonEmptyHash = new HashQuadraticProbing<>();
         EasyHashClass [] newElems = new EasyHashClass[6];
 
         for (int i = 0; i < 4; i++)
@@ -128,7 +130,7 @@ public class HashLinearProbingTest {
 
     @Test
     public void should_CorrectlyDeleteAndGetNewElems_SameHashes_WhileResizing() {
-        HashTable<EasyHashClass> nonEmptyHash = new HashLinearProbing<>(5);
+        HashTable<EasyHashClass> nonEmptyHash = new HashQuadraticProbing<>(5, -10.2, 35.4);
         EasyHashClass [] newElems = new EasyHashClass[6];
 
         for (int i = 0; i < 4; i++)
@@ -156,8 +158,9 @@ public class HashLinearProbingTest {
     }
 
     private int getNumOfElems(HashTable<?> hash) {
+        String fieldNumOfElems = "nElems";
         try {
-            Field field = hash.getClass().getSuperclass().getDeclaredField("nElems");
+            Field field = hash.getClass().getSuperclass().getDeclaredField(fieldNumOfElems);
             field.setAccessible(true);
 
             int numOfElems = field.getInt(hash);
@@ -170,13 +173,15 @@ public class HashLinearProbingTest {
     }
 
     private void printHashTable(HashTable<?> hash) {
+        HashOpenAdressing<?> castedHash = (HashOpenAdressing<?>) hash;
+
         try {
-            Method printht = hash.getClass().getSuperclass().getDeclaredMethod("printHashTab");
+            Method printht = castedHash.getClass().getSuperclass().getDeclaredMethod("printHashTab");
             printht.setAccessible(true); 
-            printht.invoke(hash);
+            printht.invoke(castedHash);
 
         } catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
-    }
+    }    
 }

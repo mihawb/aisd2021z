@@ -1,8 +1,5 @@
 package pl.edu.pw.ee;
 
-import javax.lang.model.util.ElementScanner14;
-
-import pl.edu.pw.ee.exceptions.NotImplementedException;
 import pl.edu.pw.ee.services.HashTable;
 
 public abstract class HashOpenAdressing<T extends Comparable<T>> implements HashTable<T> {
@@ -18,11 +15,12 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
         this(2039); // initial size as random prime number
     }
 
+    @SuppressWarnings("unchecked")
     HashOpenAdressing(int size) {
         validateHashInitSize(size);
 
         this.size = size;
-        this.hashElems = (T[]) new Comparable[this.size];
+        this.hashElems = (T[]) new Comparable[this.size]; // safe cast since T extends Comparable<T>
         this.tombstones = new boolean[this.size]; //defaults to false
         this.correctLoadFactor = 0.75;
     }
@@ -33,6 +31,7 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
         resizeIfNeeded();
 
         int key = newElem.hashCode();
+        key = key < 0 ? -key : key;
         int i = 0;
         int hashId = hashFunc(key, i);
 
@@ -117,21 +116,42 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
         return (double) nElems / size;
     }
 
+    @SuppressWarnings("unchecked")
     private void doubleResize() {
+        int oldsize = this.size;
+        this.size = nextPrime(this.size * 2);
+        
         T[] oldHashElems = this.hashElems;
-        this.hashElems = (T[]) new Comparable[this.size * 2];
-        this.tombstones = new boolean[this.size * 2];
+        this.hashElems = (T[]) new Comparable[this.size]; // safe cast
+        this.tombstones = new boolean[this.size];
+        this.nElems = 0;
 
-        for (int i = 0; i < this.size; i++) {
+        for (int i = 0; i < oldsize; i++) {
             if (oldHashElems[i] != nil)
                 this.put(oldHashElems[i]);
         }
-
-        this.size *= 2;
     }
 
-    public void printhashtab() {
-        int lim = this.size > 25 ? 25 : this.size;
+    private int nextPrime(int s) {
+        if (s <= 1) return 2;
+        
+        boolean prime = false;
+        
+        while (!prime) {
+            prime = true;
+            for (int i = 2; i*i <= s; i++) {
+                if (s%i == 0) {
+                    prime = false;
+                    break;
+                }
+            }
+            if (!prime) s++;
+        }
+        return s;
+    }
+
+    public void printHashTab() {
+        int lim = this.size > 20 ? 20 : this.size;
         for (int i = 0; i < lim; i++) {
             if (hashElems[i] == null && !tombstones[i])
                 System.out.println(i + " | nil");
