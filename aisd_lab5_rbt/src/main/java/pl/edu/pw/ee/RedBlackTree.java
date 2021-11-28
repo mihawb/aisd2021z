@@ -126,8 +126,13 @@ public class RedBlackTree<K extends Comparable<K>, V> {
     }
 
     private Node<K, V> rotateRight(Node<K, V> node) {
-	// TODO
-        return null;
+        Node<K, V> head = node.getLeft();
+        node.setLeft(head.getRight());
+        head.setRight(node);
+        head.setColor(node.getColor());
+        node.setColor(RED); //??????????????????????????????????????????????????????????????????/
+        
+        return head;
     }
 
     private void changeColorsIfNeeded(Node<K, V> node) {
@@ -147,8 +152,6 @@ public class RedBlackTree<K extends Comparable<K>, V> {
     }
 
     private boolean isRed(Node<K, V> node) {
-        return node == null
-                ? false
-                : node.isRed();
+        return node == null ? false : node.isRed();
     }
 }
