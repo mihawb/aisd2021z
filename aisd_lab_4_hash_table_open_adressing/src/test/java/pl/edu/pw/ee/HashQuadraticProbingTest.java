@@ -48,10 +48,10 @@ public class HashQuadraticProbingTest {
     @Test
     public void should_CorrectlyAddNewElems_DifferentHashes() {
         HashTable<EasyHashClass> nonEmptyHash = new HashQuadraticProbing<>();
-        EasyHashClass [] newElems = new EasyHashClass[4];
+        EasyHashClass[] newElems = new EasyHashClass[4];
 
         for (int i = 0; i < 4; i++)
-            newElems[i] = new EasyHashClass("a".repeat(i+1));
+            newElems[i] = new EasyHashClass("a".repeat(i + 1));
 
         int nOfElemsBeforePut = getNumOfElems(nonEmptyHash);
         for (int i = 0; i < 4; i++)
@@ -65,10 +65,10 @@ public class HashQuadraticProbingTest {
     @Test
     public void should_CorrectlyGetNewElems_DifferentHashes() {
         HashTable<EasyHashClass> nonEmptyHash = new HashQuadraticProbing<>();
-        EasyHashClass [] newElems = new EasyHashClass[4];
+        EasyHashClass[] newElems = new EasyHashClass[4];
 
         for (int i = 0; i < 4; i++)
-            newElems[i] = new EasyHashClass("a".repeat(i+1));
+            newElems[i] = new EasyHashClass("a".repeat(i + 1));
 
         for (int i = 0; i < 4; i++)
             nonEmptyHash.put(newElems[i]);
@@ -86,10 +86,10 @@ public class HashQuadraticProbingTest {
     @Test
     public void should_CorrectlyAddNewElems_SameHashes() {
         HashTable<EasyHashClass> nonEmptyHash = new HashQuadraticProbing<>();
-        EasyHashClass [] newElems = new EasyHashClass[6];
+        EasyHashClass[] newElems = new EasyHashClass[6];
 
         for (int i = 0; i < 4; i++)
-            newElems[i] = new EasyHashClass("a".repeat(i+1));
+            newElems[i] = new EasyHashClass("a".repeat(i + 1));
         newElems[4] = new EasyHashClass("b".repeat(3));
         newElems[5] = new EasyHashClass("c".repeat(3));
 
@@ -105,10 +105,10 @@ public class HashQuadraticProbingTest {
     @Test
     public void should_CorrectlyGetNewElems_SameHashes() {
         HashTable<EasyHashClass> nonEmptyHash = new HashQuadraticProbing<>();
-        EasyHashClass [] newElems = new EasyHashClass[6];
+        EasyHashClass[] newElems = new EasyHashClass[6];
 
         for (int i = 0; i < 4; i++)
-            newElems[i] = new EasyHashClass("a".repeat(i+1));
+            newElems[i] = new EasyHashClass("a".repeat(i + 1));
         newElems[4] = new EasyHashClass("b".repeat(3));
         newElems[5] = new EasyHashClass("c".repeat(3));
 
@@ -131,10 +131,10 @@ public class HashQuadraticProbingTest {
     @Test
     public void should_CorrectlyDeleteAndGetNewElems_SameHashes_WhileResizing() {
         HashTable<EasyHashClass> nonEmptyHash = new HashQuadraticProbing<>(5, -10.2, 35.4);
-        EasyHashClass [] newElems = new EasyHashClass[6];
+        EasyHashClass[] newElems = new EasyHashClass[6];
 
         for (int i = 0; i < 4; i++)
-            newElems[i] = new EasyHashClass("a".repeat(i+1));
+            newElems[i] = new EasyHashClass("a".repeat(i + 1));
         newElems[4] = new EasyHashClass("b".repeat(3));
         newElems[5] = new EasyHashClass("c".repeat(3));
 
@@ -177,11 +177,12 @@ public class HashQuadraticProbingTest {
 
         try {
             Method printht = castedHash.getClass().getSuperclass().getDeclaredMethod("printHashTab");
-            printht.setAccessible(true); 
+            printht.setAccessible(true);
             printht.invoke(castedHash);
 
-        } catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException
+                | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
-    }    
+    }
 }

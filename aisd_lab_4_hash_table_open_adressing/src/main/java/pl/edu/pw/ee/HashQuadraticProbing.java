@@ -2,7 +2,7 @@ package pl.edu.pw.ee;
 
 public class HashQuadraticProbing<T extends Comparable<T>> extends HashOpenAdressing<T> {
     private double a;
-    private double b; 
+    private double b;
 
     public HashQuadraticProbing() {
         super();
@@ -20,7 +20,7 @@ public class HashQuadraticProbing<T extends Comparable<T>> extends HashOpenAdres
     int hashFunc(int key, int i) {
         int m = getSize();
 
-        int hash = (int)(key + a*i + b*i*i) % m;
+        int hash = (int) (key + a * i + b * i * i) % m;
 
         hash = hash < 0 ? -hash : hash;
 

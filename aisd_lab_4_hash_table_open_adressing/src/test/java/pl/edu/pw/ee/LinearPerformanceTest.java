@@ -45,7 +45,7 @@ public class LinearPerformanceTest {
         for (int size = 512; size <= 262144; size *= 2) {
             ArrayList<Double> writeTimesArr = new ArrayList<Double>();
             ArrayList<Double> readTimesArr = new ArrayList<Double>();
-            double [] results;
+            double[] results;
 
             for (int i = 0; i < sampleSize; i++) {
                 results = testTemplate(size);
@@ -61,7 +61,7 @@ public class LinearPerformanceTest {
                 readTimesArr.remove(0);
             }
 
-            while (writeTimesArr.size() > sampleSize / 3){
+            while (writeTimesArr.size() > sampleSize / 3) {
                 writeTimesArr.remove(writeTimesArr.size() - 1);
                 readTimesArr.remove(readTimesArr.size() - 1);
             }
@@ -71,7 +71,7 @@ public class LinearPerformanceTest {
 
             for (int i = 0; i < writeTimesArr.size(); i++) {
                 writeTotalTime += writeTimesArr.get(i);
-                readTotalTime += readTimesArr.get(i);                
+                readTotalTime += readTimesArr.get(i);
             }
 
             writeAvgTime = writeTotalTime / (sampleSize * 2 / 3);
@@ -81,7 +81,7 @@ public class LinearPerformanceTest {
         }
     }
 
-    private double [] testTemplate(int s) {
+    private double[] testTemplate(int s) {
         hashtab = new HashLinearProbing<String>(s);
 
         long writeTimeStart = System.nanoTime();
@@ -95,7 +95,6 @@ public class LinearPerformanceTest {
         long readTimeElapsed = System.nanoTime() - readTimeStart;
 
         hashtab = null;
-        return new double[]{(double) writeTimeElapsed / 1000000000, (double) readTimeElapsed / 1000000000};
-        // casting primitives is safe, loss of precision shall not occur
+        return new double[] { (double) writeTimeElapsed / 1000000000, (double) readTimeElapsed / 1000000000 };
     }
 }

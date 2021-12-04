@@ -12,7 +12,7 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
     private final double correctLoadFactor;
 
     HashOpenAdressing() {
-        this(2039); // initial size as random prime number
+        this(2039);
     }
 
     @SuppressWarnings("unchecked")
@@ -20,8 +20,8 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
         validateHashInitSize(size);
 
         this.size = nextPrime(size);
-        this.hashElems = (T[]) new Comparable[this.size]; // safe cast since T extends Comparable<T>
-        this.tombstones = new boolean[this.size]; //defaults to false
+        this.hashElems = (T[]) new Comparable[this.size];
+        this.tombstones = new boolean[this.size];
         this.correctLoadFactor = 0.75;
     }
 
@@ -46,19 +46,19 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
     @Override
     public T get(T elem) {
         validateInputElem(elem);
-        
+
         int key = elem.hashCode();
         int i = 0;
         int hashId = hashFunc(key, i);
 
         while (hashElems[hashId] != nil || (hashElems[hashId] == nil && tombstones[hashId])) {
-            
+
             if (hashElems[hashId] != nil && hashElems[hashId].equals(elem))
                 return hashElems[hashId];
 
             i = (i + 1) % size;
             hashId = hashFunc(key, i);
-        }        
+        }
 
         return null;
     }
@@ -66,7 +66,7 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
     @Override
     public void delete(T elem) {
         validateInputElem(elem);
-        
+
         int key = elem.hashCode();
         int i = 0;
         int hashId = hashFunc(key, i);
@@ -119,9 +119,9 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
     private void doubleResize() {
         int oldsize = this.size;
         this.size = nextPrime(this.size * 2);
-        
+
         T[] oldHashElems = this.hashElems;
-        this.hashElems = (T[]) new Comparable[this.size]; // safe cast
+        this.hashElems = (T[]) new Comparable[this.size];
         this.tombstones = new boolean[this.size];
         this.nElems = 0;
 
@@ -132,19 +132,21 @@ public abstract class HashOpenAdressing<T extends Comparable<T>> implements Hash
     }
 
     private int nextPrime(int s) {
-        if (s <= 1) return 2;
-        
+        if (s <= 1)
+            return 2;
+
         boolean prime = false;
-        
+
         while (!prime) {
             prime = true;
-            for (int i = 2; i*i <= s; i++) {
-                if (s%i == 0) {
+            for (int i = 2; i * i <= s; i++) {
+                if (s % i == 0) {
                     prime = false;
                     break;
                 }
             }
-            if (!prime) s++;
+            if (!prime)
+                s++;
         }
         return s;
     }
