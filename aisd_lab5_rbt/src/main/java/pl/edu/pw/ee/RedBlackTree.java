@@ -35,6 +35,91 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         root.setColor(BLACK);
     }
 
+    public void deleteMax() {
+        if (root == null) {
+            throw new IndexOutOfBoundsException("Tried to delete an element from empty tree.");
+        }
+
+        root = deleteMax(root);
+        root.setColor(BLACK);
+    }
+
+    private Node<K, V> deleteMax(Node<K, V> node) {
+        if (node == null) {
+            throw new IndexOutOfBoundsException("Recursive deleteMax() should never receive null node as a parameter!");
+        }
+
+        if (isRed(node.getLeft())) {
+            node = rotateRight(node);
+        }
+
+        if (node.getRight() == null) {
+            return null;
+        }
+
+        if (!isRed(node.getRight()) && !isRed(node.getLeft())) {
+            node.setColor(BLACK);
+            node.getLeft().setColor(RED);
+            node.getRight().setColor(RED);
+            if (node.getLeft() != null && isRed(node.getLeft().getLeft())) {
+                node = rotateRight(node);
+                changeColors(node);
+            }
+        }
+
+        node.setRight(deleteMax(node.getRight()));
+
+        node = reorganizeTree(node);
+
+        return node;
+    }
+
+    public String getInOrder() {
+        if (this.root == null) {
+            return null;
+        }
+
+        return traversePrint(this.root, "in").trim();
+    }
+
+    public String getPreOrder() {
+        if (this.root == null) {
+            return null;
+        }
+
+        return traversePrint(this.root, "pre").trim();
+    }
+
+    public String getPostOrder() {
+        if (this.root == null) {
+            return null;
+        }
+
+        return traversePrint(this.root, "post").trim();
+    }
+
+    private String traversePrint(Node<K, V> node, String type) {
+        if (node == null) {
+            throw new NullPointerException("Invalid node passed as a parameter!");
+        }
+
+        String result = "";
+        String leftside = node.getLeft() != null ? traversePrint(node.getLeft(), type) : "";
+        String rightside = node.getRight() != null ? traversePrint(node.getRight(), type) : "";
+
+        if (type.equals("in")) {
+            result = leftside + node.toString() + " " + rightside;
+        } else if (type.equals("pre")) {
+            result = node.toString() + " " + leftside + rightside;
+        } else if (type.equals("post")) {
+            result = leftside + rightside + node.toString() + " ";
+        } else {
+            throw new IllegalArgumentException("Invalid traversing type parameter!");
+        }
+
+        return result;
+    }
+
     private void validateKey(K key) {
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null.");
@@ -130,8 +215,8 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         node.setLeft(head.getRight());
         head.setRight(node);
         head.setColor(node.getColor());
-        node.setColor(RED); //??????????????????????????????????????????????????????????????????/
-        
+        node.setColor(RED);
+
         return head;
     }
 

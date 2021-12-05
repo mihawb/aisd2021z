@@ -15,6 +15,15 @@ public class Node<K extends Comparable<K>, V> {
         this.color = RED;
     }
 
+    @Override
+    public String toString() {
+        return this.key + ":" + this.value;
+    }
+
+    public String toStringWithColor() {
+        return this.key + ":" + this.value + ":" + this.color;
+    }
+
     public boolean isRed() {
         return RED.equals(color);
     }

@@ -23,21 +23,21 @@ public class RbtMapTest {
         mapa = null;
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void setInvalidKey() {
         mapa.setValue(null, "valid");
 
         assertTrue(false);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void setInvalidValue() {
         mapa.setValue("valid", null);
 
         assertTrue(false);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void getInvalidKey() {
         mapa.getValue(null);
 
@@ -58,20 +58,20 @@ public class RbtMapTest {
     }
 
     @Test
-    public void duplicateInsteadOfOriginalKeyTest() {
+    public void shouldReplaceObjsWithDuplicateKeysTest() {
         mapa.setValue("KEY", "ORIGINAL");
         String first = mapa.getValue("KEY");
         mapa.setValue("KEY", "DUPLICATE");
-        
+
         assertEquals("ORIGINAL", first);
         assertEquals("DUPLICATE", mapa.getValue("KEY"));
     }
 
     @Test
-    public void duplicateInsteadOfOriginalValueTest() {
+    public void shouldAllowDuplicateValuesTest() {
         mapa.setValue("KEY1", "DUPLICATE");
         mapa.setValue("KEY2", "DUPLICATE");
-        
+
         assertTrue(mapa.getValue("KEY1").compareTo(mapa.getValue("KEY2")) == 0);
     }
 
