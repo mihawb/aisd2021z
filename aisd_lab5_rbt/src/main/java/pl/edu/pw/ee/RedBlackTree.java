@@ -6,6 +6,8 @@ import static pl.edu.pw.ee.Color.RED;
 public class RedBlackTree<K extends Comparable<K>, V> {
 
     private Node<K, V> root;
+    // for testing purposes only
+    private int nOfRecursivePutCalls;
 
     public V get(K key) {
         validateKey(key);
@@ -31,6 +33,10 @@ public class RedBlackTree<K extends Comparable<K>, V> {
 
     public void put(K key, V value) {
         validateParams(key, value);
+
+        // for testing purposes only
+        nOfRecursivePutCalls = 0;
+
         root = put(root, key, value);
         root.setColor(BLACK);
     }
@@ -42,36 +48,6 @@ public class RedBlackTree<K extends Comparable<K>, V> {
 
         root = deleteMax(root);
         root.setColor(BLACK);
-    }
-
-    private Node<K, V> deleteMax(Node<K, V> node) {
-        if (node == null) {
-            throw new IndexOutOfBoundsException("Recursive deleteMax() should never receive null node as a parameter!");
-        }
-
-        if (isRed(node.getLeft())) {
-            node = rotateRight(node);
-        }
-
-        if (node.getRight() == null) {
-            return null;
-        }
-
-        if (!isRed(node.getRight()) && !isRed(node.getLeft())) {
-            node.setColor(BLACK);
-            node.getLeft().setColor(RED);
-            node.getRight().setColor(RED);
-            if (node.getLeft() != null && isRed(node.getLeft().getLeft())) {
-                node = rotateRight(node);
-                changeColors(node);
-            }
-        }
-
-        node.setRight(deleteMax(node.getRight()));
-
-        node = reorganizeTree(node);
-
-        return node;
     }
 
     public String getInOrder() {
@@ -145,6 +121,9 @@ public class RedBlackTree<K extends Comparable<K>, V> {
             return new Node<K, V>(key, value);
         }
 
+        // for testing purposes only
+        nOfRecursivePutCalls++;
+
         if (isKeyBiggerThanNode(key, node)) {
             putOnTheRight(node, key, value);
 
@@ -154,6 +133,36 @@ public class RedBlackTree<K extends Comparable<K>, V> {
         } else {
             node.setValue(value);
         }
+
+        node = reorganizeTree(node);
+
+        return node;
+    }
+
+    private Node<K, V> deleteMax(Node<K, V> node) {
+        if (node == null) {
+            throw new IndexOutOfBoundsException("Recursive deleteMax() should never receive null node as a parameter!");
+        }
+
+        if (isRed(node.getLeft())) {
+            node = rotateRight(node);
+        }
+
+        if (node.getRight() == null) {
+            return null;
+        }
+
+        if (!isRed(node.getRight()) && !isRed(node.getLeft())) {
+            node.setColor(BLACK);
+            node.getLeft().setColor(RED);
+            node.getRight().setColor(RED);
+            if (node.getLeft() != null && isRed(node.getLeft().getLeft())) {
+                node = rotateRight(node);
+                changeColors(node);
+            }
+        }
+
+        node.setRight(deleteMax(node.getRight()));
 
         node = reorganizeTree(node);
 
