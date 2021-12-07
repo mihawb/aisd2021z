@@ -1,5 +1,12 @@
 package pl.edu.pw.ee;
 
-public class HuffmanTest {
+import org.junit.Test;
 
+public class HuffmanTest {
+    @Test
+    public void test0() {
+        Huffman decoder = new Huffman();
+        int numberOfBits = decoder.huffman("to_compress", true);
+        System.out.println(numberOfBits);
+    }
 }
