@@ -1,6 +1,7 @@
 package pl.edu.pw.ee;
 
 import pl.edu.pw.ee.dict.Dictionary;
+import pl.edu.pw.ee.heap.MinHeap;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,26 +24,28 @@ public class Huffman {
     }
 
     private int compress(String pathToRootDir) {
-        ArrayList<Node> forest;
+        ArrayList<Node> entries;
 
         try {
-            forest = characterCounter(pathToRootDir);
+            entries = characterCounter(pathToRootDir);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        while (forest.size() > 1) {
-            Node smol1 = getSmallestFromForest(forest);
-            Node smol2 = getSmallestFromForest(forest);
+        MinHeap<Node> forestPQ = new MinHeap<>(entries);
+
+        while (forestPQ.getLength() > 1) {
+            Node smol1 = forestPQ.pop();
+            Node smol2 = forestPQ.pop();
 
             Node container = new Node(smol1.getFreq() + smol2.getFreq());
             container.setLeft(smol1);
             container.setRight(smol2);
 
-            forest.add(container);
+            forestPQ.put(container);
         }
 
-        Node root = forest.get(0);
+        Node root = forestPQ.pop();
 
         assignCodes(root);
 
@@ -71,21 +74,21 @@ public class Huffman {
         return cc;
     }
 
-    private Node getSmallestFromForest(ArrayList<Node> forest) {
-        Node smallest = forest.get(0);
-        int sInd = 0;
-        int size = forest.size();
+    // private Node getSmallestFromForest(ArrayList<Node> forest) {
+    // Node smallest = forest.get(0);
+    // int sInd = 0;
+    // int size = forest.size();
 
-        for (int i = 1; i < size; i++) {
-            if (smallest.compareTo(forest.get(i)) > 0) {
-                smallest = forest.get(i);
-                sInd = i;
-            }
-        }
+    // for (int i = 1; i < size; i++) {
+    // if (smallest.compareTo(forest.get(i)) > 0) {
+    // smallest = forest.get(i);
+    // sInd = i;
+    // }
+    // }
 
-        forest.remove(sInd);
-        return smallest;
-    }
+    // forest.remove(sInd);
+    // return smallest;
+    // }
 
     private void printNodes(Node node) {
         if (node == null) {
