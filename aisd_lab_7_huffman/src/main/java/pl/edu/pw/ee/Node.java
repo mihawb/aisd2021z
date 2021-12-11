@@ -77,4 +77,21 @@ class Node implements Comparable<Node> {
             return 0;
         }
     }
+
+    public String findCodeOfNode(char c) {
+        String result = null;
+        
+        if (this.getLeft() == null && this.getRight() == null) {
+            if (character == c) {
+                result = this.code;
+            } 
+        } else {
+            result = this.getLeft().findCodeOfNode(c);
+            if (result == null) {
+                result = this.getRight().findCodeOfNode(c);
+            }
+        }
+
+        return result;
+    }
 }

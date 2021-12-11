@@ -3,11 +3,20 @@ package pl.edu.pw.ee;
 import pl.edu.pw.ee.dict.Dictionary;
 import pl.edu.pw.ee.heap.MinHeap;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class Huffman {
+    Node huffamnTreeRoot = null;
+    String codeAfterCompression = "";
 
     public int huffman(String pathToRootDir, boolean compress) {
         // pathToRootDir = sciezka do folderu
@@ -45,21 +54,72 @@ public class Huffman {
             forestPQ.put(container);
         }
 
-        Node root = forestPQ.pop();
+        huffamnTreeRoot = forestPQ.pop();
 
-        assignCodes(root);
+        assignCodes(huffamnTreeRoot);
 
-        return calculateNumbersOfBits(root);
+        try {
+            createCompressedFile(pathToRootDir, huffamnTreeRoot);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        printNodes(huffamnTreeRoot);
+
+        return calculateNumbersOfBits(huffamnTreeRoot);
+    }
+
+    private void createCompressedFile(String pathToRootDir, Node node) throws IOException {
+        File file1 = new File(pathToRootDir + "/compressedFile.txt");
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file1), StandardCharsets.UTF_8);
+
+        addDictionaryToCompressedFile(writer, node);
+
+        File file2 = new File(pathToRootDir + "/sourceFile.txt");
+        FileInputStream fis = new FileInputStream(file2);
+        InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(isr);
+
+        String compressed = "";
+        int i;
+        while ((i = reader.read()) != -1) {
+            char c = (char) i;
+            if (c == ' ' || c == '\n' || (int)c == 13) {
+                c = '_'; // mam 39 stopni goraczki nie chce mi sie myslec nad lepszym rozwiazaniem
+            }
+            compressed += huffamnTreeRoot.findCodeOfNode(c);
+        }
+
+        writer.append(compressed);
+
+        reader.close();
+        writer.close();
+    }
+
+    private void addDictionaryToCompressedFile(OutputStreamWriter writer, Node node) throws IOException {
+        if (node == null) {
+            return;
+        }
+        if (node.isLeaf() && (int)node.getCharacter() != 13) {
+            writer.append(node.getCharacter() + ":" + node.getCode() + "\n");
+        }
+        addDictionaryToCompressedFile(writer, node.getLeft());
+        addDictionaryToCompressedFile(writer, node.getRight());
     }
 
     private ArrayList<Node> characterCounter(String pathToRootDir) throws IOException {
-        FileReader reader = new FileReader(pathToRootDir + "/file.txt");
+        File file = new File(pathToRootDir + "/sourceFile.txt");
+        FileInputStream fis = new FileInputStream(file);
+        InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(isr);
+
         Dictionary<Character, Node> dict = new Dictionary<>();
 
         int i;
-        // whitespaces also count as characters
         while ((i = reader.read()) != -1) {
             char c = (char) i;
+            if (c == ' ' || c == '\n' || (int)c == 13) {
+                c = '_'; // mam 39 stopni goraczki nie chce mi sie myslec nad lepszym rozwiazaniem
+            }
             if (dict.getValue(c) == null) {
                 dict.setValue(c, new Node(c, 1));
             } else {
@@ -73,22 +133,6 @@ public class Huffman {
 
         return cc;
     }
-
-    // private Node getSmallestFromForest(ArrayList<Node> forest) {
-    // Node smallest = forest.get(0);
-    // int sInd = 0;
-    // int size = forest.size();
-
-    // for (int i = 1; i < size; i++) {
-    // if (smallest.compareTo(forest.get(i)) > 0) {
-    // smallest = forest.get(i);
-    // sInd = i;
-    // }
-    // }
-
-    // forest.remove(sInd);
-    // return smallest;
-    // }
 
     private void printNodes(Node node) {
         if (node == null) {
