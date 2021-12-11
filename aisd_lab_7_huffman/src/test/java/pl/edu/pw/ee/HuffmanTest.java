@@ -10,13 +10,10 @@ public class HuffmanTest {
         System.out.println(numberOfBits);
     }
 
-    // @Test 
-    // public void countertest() {
-    //     Huffman decoder = new Huffman();
-    //     try {
-    //         decoder.abilitytoread("to_compress");
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //     }
-    // }
+    @Test
+    public void test1() {
+        Huffman decoder = new Huffman();
+        int numberOfCharactersInSrc = decoder.huffman("to_decompress", false);
+        System.out.println(numberOfCharactersInSrc);
+    }
 }

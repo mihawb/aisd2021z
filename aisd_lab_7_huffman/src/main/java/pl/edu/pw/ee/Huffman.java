@@ -15,21 +15,111 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 public class Huffman {
-    Node huffamnTreeRoot = null;
-    String codeAfterCompression = "";
+    public Node huffamnTreeRoot = null;
+
+    public Huffman() {
+        this.huffamnTreeRoot = new Node();
+    }
 
     public int huffman(String pathToRootDir, boolean compress) {
-        // pathToRootDir = sciezka do folderu
-        // w folderze ma sie znajdowac jeden plik o zdefiniowanej nazwie zawierajacy
-        // tekst zrodlowy lub bit po kopresji
-        // compress decyduje czy zwracamy ilosc bitow po kompresji czy ilosc liter w
-        // pliku zrodlowym
         int result = -1;
         if (compress) {
             result = compress(pathToRootDir);
+        } else {
+            result = decompress(pathToRootDir);
         }
 
         return result;
+    }
+
+    private int decompress(String pathToRootDir) {
+        String codedFile;
+        try {
+            codedFile = createHuffTreeFromCompressedDict(pathToRootDir);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        int numberOfCharsInSource = -1;
+        try {
+            numberOfCharsInSource = decodeAndWriteToFile(pathToRootDir, codedFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return numberOfCharsInSource;
+    }
+
+    private int decodeAndWriteToFile(String pathToRootDir, String codedFile) throws IOException {
+        int numberOfCharsInSource = 0;
+
+        File file1 = new File(pathToRootDir + "/decompressedFile.txt");
+        FileOutputStream fos = new FileOutputStream(file1);
+        OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+        BufferedWriter writer = new BufferedWriter(osw);
+
+        Node iternode = huffamnTreeRoot;
+        for (int i = 0; i < codedFile.length(); i++) {
+            if (codedFile.charAt(i) == '0') {
+                iternode = iternode.getLeft();
+            } else if (codedFile.charAt(i) == '1') {
+                iternode = iternode.getRight();
+            }
+            if (iternode.isLeaf()) {
+                writer.append((char) iternode.getCharacter());
+                numberOfCharsInSource++;
+                iternode = huffamnTreeRoot;
+            }
+        }
+
+        writer.close();
+        return numberOfCharsInSource;
+    }
+
+    private String createHuffTreeFromCompressedDict(String pathToRootDir) throws IOException {
+        File file2 = new File(pathToRootDir + "/compressedFile.txt");
+        FileInputStream fis = new FileInputStream(file2);
+        InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(isr);
+        String codedFile = null;
+
+        String entry;
+        while ((entry = reader.readLine()) != null) {
+            int colonIndex = entry.indexOf(':');
+
+            if (colonIndex == -1) {
+                codedFile = entry;
+                break;
+            }
+
+            int eChar = Integer.parseInt(entry.substring(0, colonIndex));
+            String eCode = entry.substring(colonIndex + 1);
+            Node newNode = new Node(eChar, 1, eCode);
+            Node iternode = huffamnTreeRoot;
+
+            for (int i = 0; i < eCode.length() - 1; i++) {
+                if (eCode.charAt(i) == '0') {
+                    if (iternode.getLeft() == null) {
+                        iternode.setLeft(new Node());
+                    }
+                    iternode = iternode.getLeft();
+                } else if (eCode.charAt(i) == '1') {
+                    if (iternode.getRight() == null) {
+                        iternode.setRight(new Node());
+                    }
+                    iternode = iternode.getRight();
+                }
+            }
+
+            if (eCode.charAt(eCode.length() - 1) == '0') {
+                iternode.setLeft(newNode);
+            } else if (eCode.charAt(eCode.length() - 1) == '1') {
+                iternode.setRight(newNode);
+            }
+        }
+
+        reader.close();
+        return codedFile;
     }
 
     private int compress(String pathToRootDir) {
@@ -63,14 +153,15 @@ public class Huffman {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        printNodes(huffamnTreeRoot);
 
         return calculateNumbersOfBits(huffamnTreeRoot);
     }
 
     private void createCompressedFile(String pathToRootDir, Node node) throws IOException {
         File file1 = new File(pathToRootDir + "/compressedFile.txt");
-        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file1), StandardCharsets.UTF_8);
+        FileOutputStream fos = new FileOutputStream(file1);
+        OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+        BufferedWriter writer = new BufferedWriter(osw);
 
         addDictionaryToCompressedFile(writer, node);
 
@@ -82,11 +173,7 @@ public class Huffman {
         String compressed = "";
         int i;
         while ((i = reader.read()) != -1) {
-            char c = (char) i;
-            if (c == ' ' || c == '\n' || (int)c == 13) {
-                c = '_'; // mam 39 stopni goraczki nie chce mi sie myslec nad lepszym rozwiazaniem
-            }
-            compressed += huffamnTreeRoot.findCodeOfNode(c);
+            compressed += huffamnTreeRoot.findCodeOfNode(i);
         }
 
         writer.append(compressed);
@@ -95,11 +182,11 @@ public class Huffman {
         writer.close();
     }
 
-    private void addDictionaryToCompressedFile(OutputStreamWriter writer, Node node) throws IOException {
+    private void addDictionaryToCompressedFile(BufferedWriter writer, Node node) throws IOException {
         if (node == null) {
             return;
         }
-        if (node.isLeaf() && (int)node.getCharacter() != 13) {
+        if (node.isLeaf()) {
             writer.append(node.getCharacter() + ":" + node.getCode() + "\n");
         }
         addDictionaryToCompressedFile(writer, node.getLeft());
@@ -112,19 +199,15 @@ public class Huffman {
         InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(isr);
 
-        Dictionary<Character, Node> dict = new Dictionary<>();
+        Dictionary<Integer, Node> dict = new Dictionary<>();
 
         int i;
         while ((i = reader.read()) != -1) {
-            char c = (char) i;
-            if (c == ' ' || c == '\n' || (int)c == 13) {
-                c = '_'; // mam 39 stopni goraczki nie chce mi sie myslec nad lepszym rozwiazaniem
-            }
-            if (dict.getValue(c) == null) {
-                dict.setValue(c, new Node(c, 1));
+            if (dict.getValue(i) == null) {
+                dict.setValue(i, new Node(i, 1));
             } else {
-                Node newV = new Node(c, dict.getValue(c).getFreq() + 1);
-                dict.setValue(c, newV);
+                Node newV = new Node(i, dict.getValue(i).getFreq() + 1);
+                dict.setValue(i, newV);
             }
         }
         reader.close();
@@ -132,17 +215,6 @@ public class Huffman {
         ArrayList<Node> cc = dict.getAllEntries();
 
         return cc;
-    }
-
-    private void printNodes(Node node) {
-        if (node == null) {
-            return;
-        }
-        if (node.isLeaf()) {
-            System.out.println(node);
-        }
-        printNodes(node.getLeft());
-        printNodes(node.getRight());
     }
 
     private void assignCodes(Node node) {
@@ -166,5 +238,16 @@ public class Huffman {
         }
 
         return total;
+    }
+
+    private void printNodes(Node node) {
+        if (node == null) {
+            return;
+        }
+        if (node.isLeaf() && true) {
+            System.out.println(node);
+        }
+        printNodes(node.getLeft());
+        printNodes(node.getRight());
     }
 }

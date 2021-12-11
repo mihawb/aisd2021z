@@ -2,27 +2,51 @@ package pl.edu.pw.ee;
 
 class Node implements Comparable<Node> { 
     private int freq;
-    private Character character = null;
+    private Integer character;
     private String code;
     public Node left = null;
     public Node right = null;
 
-    public Node(char c, int f) {
-        freq = f;
-        character = c;
-        code = "";
+    public Node(int character, int freq) {
+        this.freq = freq;
+        this.character = character;
+        this.code = "";
     }
 
-    public Node(int f) {
-        freq = f;
-        code = "";
+    public Node(int freq) {
+        this.freq = freq;
+        this.character = null;
+        this.code = "";
+    }
+
+    public Node(int character, String code) {
+        this.character = character;
+        this.code = code;
+    }
+
+    public Node(int character, int freq, String code) {
+        this.freq = freq;
+        this.character = character;
+        this.code = code;
+    }
+
+    public Node() {
+        this.character = null;
     }
 
     public int getFreq() {
         return freq;
     }
 
-    public Character getCharacter() {
+    public void setFreq(int freq) {
+        this.freq = freq;
+    }
+
+    public void incrementFreq() {
+        this.freq++;
+    }
+
+    public int getCharacter() {
         return character;
     }
 
@@ -78,7 +102,7 @@ class Node implements Comparable<Node> {
         }
     }
 
-    public String findCodeOfNode(char c) {
+    public String findCodeOfNode(int c) {
         String result = null;
         
         if (this.getLeft() == null && this.getRight() == null) {
