@@ -4,12 +4,12 @@ class LongestCommonSubsequence {
     private String firstStr;
     private String secondStr;
     private Elem[][] letterPairs;
-    private boolean foundLCS;
+    private boolean matrixInitiated;
 
     public LongestCommonSubsequence(String firstStr, String secondStr) {
         this.firstStr = firstStr;
         this.secondStr = secondStr;
-        this.foundLCS = false;
+        this.matrixInitiated = false;
     }
 
     public String findLCS() {
@@ -35,12 +35,12 @@ class LongestCommonSubsequence {
             }
         }
 
-        this.foundLCS = true;
+        this.matrixInitiated = true;
         return gatherLCSFromPath();
     }
 
     public void display() {
-        if (!foundLCS) {
+        if (!matrixInitiated) {
             findLCS();
         }
 

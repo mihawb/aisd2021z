@@ -5,7 +5,7 @@ public class Elem implements Comparable<Elem> {
     private char path;
     private boolean drawable;
 
-    Elem(int value) {
+    public Elem(int value) {
         this.value = value;
     }
 
