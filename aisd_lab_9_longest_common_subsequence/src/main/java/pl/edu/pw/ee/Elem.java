@@ -1,11 +1,11 @@
 package pl.edu.pw.ee;
 
-public class Elem implements Comparable<Elem> {
+class Elem implements Comparable<Elem> {
     private int value;
     private char path;
     private boolean drawable;
 
-    public Elem(int value) {
+    Elem(int value) {
         this.value = value;
     }
 

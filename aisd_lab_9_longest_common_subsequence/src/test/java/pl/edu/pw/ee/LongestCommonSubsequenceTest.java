@@ -6,6 +6,13 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 public class LongestCommonSubsequenceTest {
+    @Test(expected = IllegalArgumentException.class)
+    public void nullEntries() {
+        LongestCommonSubsequence lcs = new LongestCommonSubsequence(null, null);
+        String result = lcs.findLCS();
+        assertNull(result);
+    }
+
     @Test
     public void emptyEntries() {
         LongestCommonSubsequence lcs = new LongestCommonSubsequence("", "");
@@ -13,12 +20,12 @@ public class LongestCommonSubsequenceTest {
         assertNull(result);
         lcs.display();
         /*
-         * display method intentionally works for every input imagianble
+         * display method intentionally works for every non-null input imagianble
          * and in this case its output should look like the following:
          *         |        |
-         * ------------------
+         * --------+--------+
          *         |      0 |
-         * ------------------
+         * --------+--------+
          */
     }
 
@@ -40,9 +47,10 @@ public class LongestCommonSubsequenceTest {
         String result = lcs.findLCS();
         assertEquals("REZET", result);
         lcs.display();
-        /* 
+        /*
          * display method should render path characters
          * only in the cells going along the path of LCS
+         * favouring going upward rather than sideways
          */
 
     }
@@ -58,14 +66,23 @@ public class LongestCommonSubsequenceTest {
 
     @Test
     public void shouldFindLCSOccuringIn1stStr() {
-        LongestCommonSubsequence lcs = new LongestCommonSubsequence("VABOODOCDO", "PULACBDLUP");
+        LongestCommonSubsequence lcs = new LongestCommonSubsequence("XABXXDXCXX", "YYYABCDYYY");
         String result = lcs.findLCS();
         assertEquals("ABD", result);
     }
 
     @Test
+    public void shouldProperlyEncodeAndDrawWhitespaces() {
+        LongestCommonSubsequence lcs = new LongestCommonSubsequence("\b\t\n \f\r\'\"\\", "\b\t\n \f\r\'\"\\");
+        String result = lcs.findLCS();
+        assertEquals("\\b\\t\\n \\f\\r\\'\\\"\\", result);
+        lcs.display();
+    }
+
+    @Test
     public void displayStressTest() {
-        LongestCommonSubsequence lcs = new LongestCommonSubsequence("POLITECHNIKAPOLITECHNIKAPOLITECHNIKAPOLITECHNIKA", "TOALETATOALETATOALETATOALETA");
+        LongestCommonSubsequence lcs = new LongestCommonSubsequence("POLITECHNIKAPOLITECHNIKAPOLITECHNIKAPOLITECHNIKA",
+                "TOALETATOALETATOALETATOALETA");
         String result = lcs.findLCS();
         assertEquals("OLTAOLTAOLTAOLTA", result);
         lcs.display();

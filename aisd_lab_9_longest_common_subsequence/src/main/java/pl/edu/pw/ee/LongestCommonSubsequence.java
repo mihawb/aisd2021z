@@ -13,6 +13,7 @@ class LongestCommonSubsequence {
     }
 
     public String findLCS() {
+        validateStrings();
         initialiseMatrix();
         int I = firstStr.length() + 1;
         int J = secondStr.length() + 1;
@@ -49,13 +50,15 @@ class LongestCommonSubsequence {
 
         System.out.printf((" ".repeat(8) + "|").repeat(2));
         for (int i = 0; i < secondStr.length(); i++) {
-            System.out.printf("%1$7s |", secondStr.charAt(i));
+            String c = whitespaceHandler(secondStr.charAt(i), true);
+            System.out.printf("%1$7s |", c);
         }
-        System.out.println("\n" + "-".repeat(9 * (J + 1)));
+        System.out.println("\n" + ("-".repeat(8) + "+").repeat(J + 1));
 
         for (int i = 0; i < I; i++) {
             if (i > 0) {
-                System.out.printf("%1$7s |", firstStr.charAt(i - 1));
+                String c = whitespaceHandler(firstStr.charAt(i - 1), true);
+                System.out.printf("%1$7s |", c);
             } else {
                 System.out.printf(" ".repeat(8) + "|");
             }
@@ -64,7 +67,13 @@ class LongestCommonSubsequence {
                 System.out.printf("%1$7s |", letterPairs[i][j]);
             }
 
-            System.out.println("\n" + "-".repeat(9 * (J + 1)));
+            System.out.println("\n" + ("-".repeat(8) + "+").repeat(J + 1));
+        }
+    }
+
+    private void validateStrings() {
+        if (firstStr == null || secondStr == null) {
+            throw new IllegalArgumentException("Input strings cannot be null!");
         }
     }
 
@@ -90,7 +99,8 @@ class LongestCommonSubsequence {
             letterPairs[i][j].setDrawState(true);
             char whereTo = letterPairs[i][j].getPath();
             if (whereTo == '\\') {
-                LCS = firstStr.charAt(i - 1) + LCS;
+                String toAdd = whitespaceHandler(firstStr.charAt(i - 1), false);
+                LCS = toAdd + LCS;
                 i--;
                 j--;
             } else if (whereTo == '<') {
@@ -101,5 +111,33 @@ class LongestCommonSubsequence {
         }
 
         return LCS.equals("") ? null : LCS;
+    }
+
+    private String whitespaceHandler(Character c, boolean draw) {
+        if (c == '\b') {
+            return "\\b";
+        } else if (c == '\t') {
+            return "\\t";
+        } else if (c == '\n') {
+            return "\\n";
+        } else if (c == '\f') {
+            return "\\f";
+        } else if (c == '\r') {
+            return "\\r";
+        } else if (c == '\'') {
+            return "\\'";
+        } else if (c == '\"') {
+            return "\\\"";
+        } else if (c == '\\') {
+            return "\\";
+        } else if (c == ' ') {
+            if (draw) {
+                return "\\s";
+            } else {
+                return " ";
+            }
+        } else {
+            return c.toString();
+        }
     }
 }
