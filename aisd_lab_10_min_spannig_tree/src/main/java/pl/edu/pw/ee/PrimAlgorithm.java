@@ -9,7 +9,19 @@ import java.io.BufferedReader;
 
 public class PrimAlgorithm implements MinSpanningTree {
     public String findMST(String pathToFile){
-        // TODO
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(pathToFile));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        
+        // TODOcd
         return null;
     }
 }
