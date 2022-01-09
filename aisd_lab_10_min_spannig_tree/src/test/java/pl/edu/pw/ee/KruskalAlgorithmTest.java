@@ -5,42 +5,44 @@ import org.junit.Test;
 
 import pl.edu.pw.ee.services.MinSpanningTree;
 
-public class PrimAlgorithmTest {
+public class KruskalAlgorithmTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotHandleNullFileName() {
-        MinSpanningTree mst = new PrimAlgorithm();
+        MinSpanningTree mst = new KruskalAlgorithm();
         mst.findMST(null);
     }
 
     @Test(expected = RuntimeException.class)
     public void shouldNotHandleNonExistentFile() {
-        MinSpanningTree mst = new PrimAlgorithm();
+        MinSpanningTree mst = new KruskalAlgorithm();
         mst.findMST("thisfiledoesntexist.txt");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotHandleEmptyFile() {
-        MinSpanningTree mst = new PrimAlgorithm();
+        MinSpanningTree mst = new KruskalAlgorithm();
         mst.findMST("empty_data.txt");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotHandleIncorrectlyFormattedFile1() {
-        MinSpanningTree mst = new PrimAlgorithm();
+        MinSpanningTree mst = new KruskalAlgorithm();
         mst.findMST("invalid1_data.txt");
     }
 
     @Test(expected = NumberFormatException.class)
     public void shouldNotHandleIncorrectlyFormattedFile2() {
-        MinSpanningTree mst = new PrimAlgorithm();
+        MinSpanningTree mst = new KruskalAlgorithm();
         mst.findMST("invalid2_data.txt");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotHandleNotConnectedgraph() {
-        MinSpanningTree mst = new PrimAlgorithm();
+        MinSpanningTree mst = new KruskalAlgorithm();
         mst.findMST("notconnected_data.txt");
     }
+
+    ///////////////////////////////////////
 
     @Test
     public void shouldNotTakeRepeatingEdgeIntoMST() {

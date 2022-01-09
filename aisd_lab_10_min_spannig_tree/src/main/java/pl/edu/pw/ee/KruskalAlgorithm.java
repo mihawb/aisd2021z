@@ -8,25 +8,19 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.util.Collections;
 
-public class PrimAlgorithm implements MinSpanningTree {
-    WeightedGraph mst;
-    ArrayList<Edge> edgesPQ;
-
-    public PrimAlgorithm() {
-        this.mst = new WeightedGraph();
-        this.edgesPQ = new ArrayList<>();
-    }
-
+public class KruskalAlgorithm implements MinSpanningTree {
     public String findMST(String pathToFile) {
         if (pathToFile == null) {
             throw new IllegalArgumentException();
         }
 
         WeightedGraph graph = new WeightedGraph();
+        ArrayList<WeightedGraph> forest = new ArrayList<>();
         ArrayList<Edge> edgesPQ = new ArrayList<>();
-        ArrayList<Node> visited = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(pathToFile))) {
+            ArrayList<String> added = new ArrayList<>();
+
             String line;
             while ((line = reader.readLine()) != null) {
                 int ind1 = line.indexOf(" ");
@@ -48,7 +42,28 @@ public class PrimAlgorithm implements MinSpanningTree {
 
                 graph.addEdge(nodeValue1, nodeValue2, weight);
                 graph.addEdge(nodeValue2, nodeValue1, weight);
+
+                // repeating edges not handled
+                Edge newedge = new Edge(nodeValue1, nodeValue2, weight);
+                if (edgesPQ.indexOf(newedge) == -1) {
+                    edgesPQ.add(newedge);
+                }
+
+                if (added.indexOf(nodeValue1) == -1) {
+                    added.add(nodeValue1);
+                    WeightedGraph mst = new WeightedGraph();
+                    mst.addEdge(nodeValue1, nodeValue1, 0);
+                    forest.add(mst);
+                }
+
+                if (added.indexOf(nodeValue2) == -1) {
+                    added.add(nodeValue2);
+                    WeightedGraph mst = new WeightedGraph();
+                    mst.addEdge(nodeValue2, nodeValue2, 0);
+                    forest.add(mst);
+                }
             }
+
         } catch (FileNotFoundException e) {
             throw new RuntimeException("Could not load specified file!", e);
         } catch (IOException e) {
@@ -63,37 +78,36 @@ public class PrimAlgorithm implements MinSpanningTree {
             throw new IllegalArgumentException("Provided graph is not connected!");
         }
 
-        Node tmpNode = new Node(graph.getNode(0).getValue());
-        mst.addEdge(tmpNode.getValue(), tmpNode.getValue(), 0);
+        Collections.sort(edgesPQ);
 
-        while (mst.getNodesQuantity() != graph.getNodesQuantity()) {
-            visited.add(new Node(tmpNode.getValue()));
-            tmpNode = graph.getNode(tmpNode.getValue());
+        while (edgesPQ.size() > 0) {
+            Edge e = edgesPQ.remove(0);
 
-            Node iter = tmpNode.getConnection();
-            while (iter != null) {
-                if (visited.indexOf(iter) == -1) {
-                    edgesPQ.add(new Edge(tmpNode.getValue(), iter.getValue(), iter.getWeight()));
+            int indNode1, indNode2;
+
+            for (indNode1 = 0; indNode1 < forest.size(); indNode1++) {
+                if (forest.get(indNode1).getNode(e.getFromNode()) != null) {
+                    break;
                 }
-                iter = iter.getConnection();
             }
 
-            Collections.sort(edgesPQ);
-
-            Edge lEdge = edgesPQ.remove(0);
-            mst.addEdge(lEdge.getFromNode(), lEdge.getToNode(), lEdge.getWeight());
-            tmpNode = new Node(lEdge.getToNode());
-
-            int i = 0;
-            while (i < edgesPQ.size()) {
-                if (edgesPQ.get(i).getToNode().equals(tmpNode.getValue())) {
-                    edgesPQ.remove(i);
-                    continue;
+            for (indNode2 = 0; indNode2 < forest.size(); indNode2++) {
+                if (forest.get(indNode2).getNode(e.getToNode()) != null) {
+                    break;
                 }
-                i++;
+            }
+
+            if (indNode1 != indNode2) {
+                WeightedGraph newMST = forest.get(indNode1);
+                for (int i = 0; i < forest.get(indNode2).getNodesQuantity(); i++) {
+                    newMST.addNode(forest.get(indNode2).getNode(i));
+                }
+                newMST.addEdge(e.getFromNode(), e.getToNode(), e.getWeight());
+                forest.set(indNode1, newMST);
+                forest.remove(indNode2);
             }
         }
 
-        return mst.getOutputString();
+        return forest.get(0).getOutputString();
     }
 }

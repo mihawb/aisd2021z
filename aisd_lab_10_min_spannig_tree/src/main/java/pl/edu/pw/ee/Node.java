@@ -1,23 +1,23 @@
 package pl.edu.pw.ee;
 
-public class NodeOld implements Comparable<NodeOld> {
+public class Node implements Comparable<Node> {
     private String value;
     private Integer weight;
-    private NodeOld con;
+    private Node con;
 
-    public NodeOld(String value) {
+    public Node(String value) {
         this.value = value;
         this.weight = null;
         this.con = null;
     }
 
-    public NodeOld(String value, int weight) {
+    public Node(String value, int weight) {
         this.value = value;
         this.weight = weight;
         this.con = null;
     }
 
-    public void setConnection(NodeOld con) {
+    public void setConnection(Node con) {
         this.con = con;
     }
 
@@ -29,7 +29,7 @@ public class NodeOld implements Comparable<NodeOld> {
         return weight;
     }
 
-    public NodeOld getConnection() {
+    public Node getConnection() {
         return con;
     }
 
@@ -44,7 +44,7 @@ public class NodeOld implements Comparable<NodeOld> {
         if (getClass() != other.getClass()) {
             return false;
         }
-        NodeOld otherNode = (NodeOld) other;
+        Node otherNode = (Node) other;
 
         return this.value.equals(otherNode.value);
     }
@@ -55,19 +55,19 @@ public class NodeOld implements Comparable<NodeOld> {
     }
 
     @Override
-    public int compareTo(NodeOld other) {
+    public int compareTo(Node other) {
         return this.value.compareTo(other.value);
     }
 
-    public void addConnectedNode(NodeOld to) {
-        // edges repeating in source file will not be handled, idc
+    public void addConnectedNode(Node to) {
+        // edges repeating in source file will not be handled
         if (this.getConnection() == null) {
             this.setConnection(to);
         } else if (to.compareTo(this.getConnection()) < 0) {
             to.setConnection(this.getConnection());
             this.setConnection(to);
         } else {
-            NodeOld iter = this.getConnection();
+            Node iter = this.getConnection();
             while(to.compareTo(iter) > 0) {
                 if (iter.getConnection() == null) {
                     iter.setConnection(to);
