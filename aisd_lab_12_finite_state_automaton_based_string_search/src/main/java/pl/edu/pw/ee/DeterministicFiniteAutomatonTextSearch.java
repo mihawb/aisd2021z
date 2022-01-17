@@ -58,17 +58,14 @@ public class DeterministicFiniteAutomatonTextSearch implements PatternSearch {
         int state = 0;
 
         for (int i = 0; i < n; i++) {
-            try { // chodzi o to ze jesli znajdziemy znak, ktory nie jest w alfabecie wzorca
-                  // to dostaniemy exception
-                  // ale zamiast dodawac je do transMap
-                  // mozemy po prostu ustawic state<-0 (co znaczy ze znaleziono 0 znakow wzorca)
+            try {
                 state = transMap.get(new Key(state, text.charAt(i)));
             } catch (NullPointerException e) {
                 state = 0;
             }
 
             if (state == acceptedState) {
-                result = i - acceptedState + 1; // ?????????????? ale chyba dobrze w sensie i-(accState-1)
+                result = i - acceptedState + 1;
                 break;
             }
         }
@@ -87,20 +84,15 @@ public class DeterministicFiniteAutomatonTextSearch implements PatternSearch {
         int state = 0;
 
         for (int i = 0; i < n; i++) {
-            try { // chodzi o to ze jesli znajdziemy znak, ktory nie jest w alfabecie wzorca
-                  // to dostaniemy exception
-                  // ale zamiast dodawac je do transMap
-                  // mozemy po prostu ustawic state<-0 (co znaczy ze znaleziono 0 znakow wzorca)
+            try {
                 state = transMap.get(new Key(state, text.charAt(i)));
             } catch (NullPointerException e) {
                 state = 0;
             }
 
             if (state == acceptedState) {
-                // result = i - acceptedState + 1; // ?????????????? ale chyba dobrze w sensie i-(accState-1)
                 result = resizeAndPut(result, i - acceptedState + 1);
                 state = 0;
-                // break;
             }
         }
 
@@ -143,7 +135,7 @@ public class DeterministicFiniteAutomatonTextSearch implements PatternSearch {
                 while (k > 0 && !isSuffixOfPattern(k, q, sign)) {
                     k--;
                 }
-                System.out.printf("sigma(%d, %c) = %d\n", q, sign, k);
+                // System.out.printf("sigma(%d, %c) = %d\n", q, sign, k);
                 transMap.put(new Key(q, sign), k);
             }
         }
